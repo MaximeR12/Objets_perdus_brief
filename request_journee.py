@@ -9,3 +9,15 @@ response = requests.get("https://archive-api.open-meteo.com/v1/archive?latitude=
 date_list = response.json()["daily"]["time"]
 temperature_list = response.json()["daily"]["temperature_2m_mean"]
 
+
+days_list = []
+for i in range(len(date_list)):
+    days_list.append({"date" : date_list[i], "temperature" : temperature_list[i]})
+
+for day in days_list:
+    curseur.execute("""
+        INSERT INTO journee (id, date, temperature) VALUES (NULL, ?, ?)
+    """, (day["date"], day["temperature"]))
+    connexion.commit()
+
+connexion.close()
