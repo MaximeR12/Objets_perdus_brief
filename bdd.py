@@ -16,6 +16,16 @@ curseur.execute("""
 connexion.commit()
 
 curseur.execute("""
+                CREATE TABLE IF NOT EXISTS journee (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    date DATE NOT NULL,
+                    temperature INTEGER NOT NULL
+                )
+                """)
+
+connexion.commit()
+
+curseur.execute("""
                 CREATE TABLE IF NOT EXISTS objet_trouve (
                     gare_id INTEGER,
                     journee_id INTEGER,
@@ -27,13 +37,4 @@ curseur.execute("""
 
 connexion.commit()
 
-curseur.execute("""
-                CREATE TABLE IF NOT EXISTS journee (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    date DATE NOT NULL,
-                    temperature INTEGER NOT NULL
-                )
-                """)
-
-connexion.commit()
 connexion.close()
