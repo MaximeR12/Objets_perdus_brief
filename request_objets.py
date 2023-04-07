@@ -1,6 +1,8 @@
 import requests
+import sqlite3
+import bdd
+import request_gare
 from request_journee import days_list
-
 gares = [
     'Paris Bercy',
     'Paris Gare du Nord',
@@ -36,6 +38,9 @@ def get_gare_id_by_name(name : str):
             return referencies[ref]
     return 404
 
+def get_day_id_by_str(date : str):
+    id = list(filter(lambda dic: dic['date'] == date, days_list))
+    return id[0]['id']
 
 
 request_objects_list = get_lost_objects(gares, annees)
@@ -44,4 +49,15 @@ objects_liste = []
 for items_by_gareyear in request_objects_list:
     for item in items_by_gareyear:
         item = item["fields"]
-        objects_liste.append({"gare_id" : get_gare_id_by_name(item['gc_obo_gare_origine_r_name']), "type" : item['gc_obo_type_c'], "date" : item["date"][:10]})
+        objects_liste.append({"gare_id" : get_gare_id_by_name(item['gc_obo_gare_origine_r_name']), "type" : item['gc_obo_type_c'], "date" : get_day_id_by_str(item["date"][:10])})
+
+connexion = sqlite3.connect("bdd.db")
+curseur = connexion.cursor()
+
+for objet in objects_liste:
+    curseur.execute("""
+        INSERT INTO objet_trouve
+            VALUES (NULL, ?, ?, ?)
+    """, (objet["type"], objet["gare_id"], objet["date"]))
+    connexion.commit()
+connexion.close()

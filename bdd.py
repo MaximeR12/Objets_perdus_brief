@@ -27,9 +27,10 @@ connexion.commit()
 
 curseur.execute("""
                 CREATE TABLE IF NOT EXISTS objet_trouve (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    type TEXT NOT NULL,
                     gare_id INTEGER,
                     journee_id INTEGER,
-                    type TEXT NOT NULL,
                     FOREIGN KEY(gare_id) REFERENCES gare(id),
                     FOREIGN KEY(journee_id) REFERENCES journee(id)
                 )
